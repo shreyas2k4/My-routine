@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shreyas · Transformation Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --indigo: #6366F1;
+    --indigo-dark: #4F46E5;
+    --indigo-light: #EEF2FF;
+    --violet: #8B5CF6;
+    --pink: #EC4899;
+    --pink-light: #FCE7F3;
+    --cyan: #22D3EE;
+    --lime: #A3E635;
+    --lime-dark: #65A30D;
+    --amber: #FCD34D;
+    --amber-dark: #D97706;
+    --rose: #FB7185;
+    --teal: #2DD4BF;
+    --bg: #F8FAFC;
+    --card: #FFFFFF;
+    --text: #0F172A;
+    --muted: #64748B;
+    --border: #E2E8F0;
+    --success: #22C55E;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(99,102,241,0.10);
+    --gradient-brand: linear-gradient(135deg, #6366F1 0%, #8B5CF6 45%, #EC4899 100%);
+    --gradient-warm: linear-gradient(135deg, #FB7185 0%, #FCD34D 100%);
+    --gradient-fresh: linear-gradient(135deg, #2DD4BF 0%, #A3E635 100%);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+  ::selection { background: var(--violet); color: white; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes floatBlob {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(20px,-24px) scale(1.06); }
+    66% { transform: translate(-16px,14px) scale(0.96); }
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,0.35); }
+    50% { box-shadow: 0 0 0 10px rgba(139,92,246,0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes popIn {
+    0% { opacity: 0; transform: scale(0.85); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .fade-up { animation: fadeInUp 0.55s ease both; }
+
+  /* ── Landing Page ── */
+  #landing-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(120deg, #4F46E5, #8B5CF6, #EC4899, #6366F1);
+    background-size: 300% 300%;
+    animation: gradientShift 14s ease infinite;
+    color: white;
+  }
+  .landing-blob {
+    position: absolute; border-radius: 50%; filter: blur(50px);
+    opacity: 0.45; animation: floatBlob 10s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .blob-1 { width: 320px; height: 320px; background: var(--lime); top: -80px; left: -60px; }
+  .blob-2 { width: 260px; height: 260px; background: var(--cyan); bottom: -60px; right: -40px; animation-delay: 2s; }
+  .blob-3 { width: 220px; height: 220px; background: var(--amber); top: 40%; right: 10%; animation-delay: 4s; }
+
+  .landing-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 24px; position: relative; z-index: 2;
+  }
+  .landing-logo { display: flex; align-items: center; gap: 10px; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 18px; }
+  .landing-logo .ring {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: conic-gradient(#fff 0%, var(--lime) 40%, var(--amber) 70%, #fff 100%);
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+  }
+  .landing-signin-link {
+    background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.4);
+    color: white; padding: 9px 18px; border-radius: 30px; font-family:'Inter'; font-weight: 600;
+    font-size: 13px; cursor: pointer; backdrop-filter: blur(6px); transition: all 0.2s;
+  }
+  .landing-signin-link:hover { background: rgba(255,255,255,0.28); transform: translateY(-1px); }
+
+  .landing-hero {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 20px 24px 50px; position: relative; z-index: 2;
+  }
+  .landing-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+    padding: 7px 16px; border-radius: 30px; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.4px; margin-bottom: 22px; backdrop-filter: blur(6px);
+    animation: fadeInUp 0.6s ease both;
+  }
+  .landing-hero h1 {
+    font-family: 'Sora', sans-serif; font-weight: 800; font-size: 40px; line-height: 1.15;
+    max-width: 640px; margin-bottom: 14px; animation: fadeInUp 0.7s ease both 0.05s;
+  }
+  .landing-hero h1 span {
+    background: linear-gradient(90deg, var(--lime), var(--amber), var(--cyan));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    background-size: 200% auto; animation: shimmer 4s linear infinite;
+  }
+  .landing-hero p.sub {
+    font-size: 16px; opacity: 0.92; max-width: 480px; margin-bottom: 30px; line-height: 1.6;
+    animation: fadeInUp 0.7s ease both 0.12s;
+  }
+  .landing-cta-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; animation: fadeInUp 0.7s ease both 0.18s; }
+  .btn-landing-primary {
+    padding: 15px 30px; border: none; border-radius: 14px; cursor: pointer;
+    background: white; color: var(--indigo-dark); font-family: 'Sora', sans-serif;
+    font-weight: 800; font-size: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-landing-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 14px 36px rgba(0,0,0,0.24); }
+  .btn-landing-secondary {
+    padding: 15px 26px; border: 1.5px solid rgba(255,255,255,0.5); border-radius: 14px;
+    background: rgba(255,255,255,0.1); color: white; font-family: 'Sora', sans-serif;
+    font-weight: 700; font-size: 15px; cursor: pointer; backdrop-filter: blur(6px);
+    transition: all 0.15s;
+  }
+  .btn-landing-secondary:hover { background: rgba(255,255,255,0.22); transform: translateY(-2px); }
+
+  .landing-features {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    max-width: 720px; width: 100%; animation: fadeInUp 0.7s ease both 0.24s;
+  }
+  .landing-feature {
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 16px; padding: 16px 10px; text-align: center; backdrop-filter: blur(6px);
+    transition: transform 0.2s, background 0.2s;
+  }
+  .landing-feature:hover { transform: translateY(-4px); background: rgba(255,255,255,0.22); }
+  .landing-feature .lf-icon { font-size: 24px; margin-bottom: 6px; }
+  .landing-feature .lf-label { font-size: 12px; font-weight: 700; }
+  @media (max-width: 600px) {
+    .landing-hero h1 { font-size: 28px; }
+    .landing-features { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── Auth Screen ── */
+  #auth-screen {
+    min-height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #EEF2FF 0%, #F0FDF4 50%, #FFF7ED 100%);
+    padding: 20px;
+  }
+  .auth-card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(99,102,241,0.18);
+    animation: popIn 0.4s ease both;
+    position: relative;
+  }
+  .auth-back {
+    background: none; border: none; color: var(--muted); font-size: 13px; font-weight: 600;
+    cursor: pointer; margin-bottom: 14px; display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'Inter', sans-serif; transition: color 0.15s;
+  }
+  .auth-back:hover { color: var(--indigo); }
+  .auth-logo {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 28px;
+  }
+  .auth-logo .ring {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: conic-gradient(var(--indigo) 0%, var(--lime) 40%, var(--amber) 70%, var(--indigo) 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .auth-logo .ring span { font-size:18px; }
+  .auth-logo h1 { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 800; color: var(--indigo); }
+  .auth-logo p { font-size: 11px; color: var(--muted); }
+  .auth-tabs { display: flex; gap: 0; margin-bottom: 28px; background: var(--border); border-radius: 12px; padding: 4px; }
+  .auth-tab {
+    flex: 1; padding: 10px; border: none; background: transparent; border-radius: 10px;
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer;
+    transition: all 0.2s; color: var(--muted);
+  }
+  .auth-tab.active { background: white; color: var(--indigo); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .auth-form { display: flex; flex-direction: column; gap: 14px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .field input {
+    width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 12px;
+    font-size: 15px; font-family: 'Inter', sans-serif; outline: none; transition: border 0.2s;
+    background: var(--bg);
+  }
+  .field input:focus { border-color: var(--indigo); background: white; }
+  .btn-primary {
+    width: 100%; padding: 14px; background: var(--gradient-brand); background-size: 200% auto; color: white;
+    border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
+    font-family: 'Sora', sans-serif; cursor: pointer; transition: background-position 0.4s, transform 0.1s, box-shadow 0.2s;
+    margin-top: 6px; box-shadow: 0 6px 18px rgba(99,102,241,0.25);
+  }
+  .btn-primary:hover { background-position: right center; box-shadow: 0 8px 22px rgba(139,92,246,0.35); transform: translateY(-1px); }
+  .btn-primary:active { transform: scale(0.98); }
+  .auth-msg { font-size: 13px; color: var(--rose); text-align: center; min-height: 18px; }
+
+  /* ── App Shell ── */
+  #app { display: none; height: 100vh; flex-direction: column; }
+  #app.visible { display: flex; }
+
+  /* Top Bar */
+  .topbar {
+    background: white; padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-brand { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 17px; color: var(--indigo); }
+  .topbar-date { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .streak-badge {
+    display: flex; align-items: center; gap: 4px;
+    background: #FFF7ED; color: var(--amber-dark); padding: 5px 10px;
+    border-radius: 20px; font-size: 12px; font-weight: 700;
+    animation: pulseGlow 2.4s ease-in-out infinite;
+  }
+  .avatar-btn {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--indigo);
+    color: white; font-family: 'Sora'; font-weight: 700; font-size: 13px;
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Content Area */
+  .content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+
+  /* Bottom Nav (Mobile) */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; border-top: 1px solid var(--border);
+    display: flex; z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 3px; padding: 10px 4px;
+    background: none; border: none; cursor: pointer;
+    font-size: 10px; font-weight: 600; color: var(--muted);
+    font-family: 'Inter', sans-serif; transition: color 0.2s;
+  }
+  .nav-item.active { color: var(--indigo); }
+  .nav-item svg { width: 22px; height: 22px; }
+  .nav-icon { font-size: 22px; line-height: 1; }
+
+  /* Desktop Sidebar */
+  @media (min-width: 768px) {
+    #app { flex-direction: row; }
+    .topbar { display: none; }
+    .bottom-nav { display: none; }
+    .sidebar {
+      width: 240px; min-width: 240px; background: white;
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      padding: 28px 16px;
+      height: 100vh; position: sticky; top: 0; overflow-y: auto;
+    }
+    .content { flex: 1; padding: 28px; padding-bottom: 28px; overflow-y: auto; height: 100vh; }
+    .sidebar-brand { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 20px; color: var(--indigo); margin-bottom: 4px; padding: 0 8px; }
+    .sidebar-sub { font-size: 11px; color: var(--muted); margin-bottom: 28px; padding: 0 8px; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .sidebar-nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 12px;
+      background: none; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 600; color: var(--muted);
+      font-family: 'Inter', sans-serif; text-align: left;
+      transition: all 0.15s;
+    }
+    .sidebar-nav-item.active { background: var(--indigo-light); color: var(--indigo); }
+    .sidebar-nav-item:hover:not(.active) { background: var(--bg); }
+    .sidebar-icon { font-size: 18px; width: 24px; text-align: center; }
+    .sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
+    .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 10px 8px; }
+    .sidebar-user .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--indigo); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; font-family: 'Sora'; flex-shrink: 0; }
+    .sidebar-user .uname { font-size: 13px; font-weight: 600; }
+    .sidebar-user .uemail { font-size: 11px; color: var(--muted); }
+    .sidebar-streak { display: flex; align-items: center; gap: 6px; background: #FFF7ED; color: var(--amber-dark); padding: 8px 12px; border-radius: 12px; font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+    .logout-btn { width: 100%; padding: 10px; background: none; border: 1.5px solid var(--border); border-radius: 10px; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s; }
+    .logout-btn:hover { border-color: var(--rose); color: var(--rose); }
+  }
+  .sidebar { display: none; }
+  @media (min-width: 768px) { .sidebar { display: flex; } }
+
+  /* ── Pages ── */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeInUp 0.4s ease both; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(99,102,241,0.16); }
+  .card-title { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+  /* ── Dashboard ── */
+  .dash-greeting { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 24px; margin-bottom: 4px; }
+  .dash-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+
+  /* Progress Ring */
+  .ring-container { display: flex; align-items: center; justify-content: center; padding: 10px 0 20px; }
+  .ring-wrap { position: relative; width: 160px; height: 160px; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-center {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .ring-pct { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 32px; color: var(--indigo); }
+  .ring-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+  /* Stats Row */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-card {
+    background: var(--card); border-radius: 14px; padding: 14px 10px;
+    text-align: center; box-shadow: var(--shadow);
+    transition: transform 0.2s ease;
+  }
+  .stat-card:hover { transform: translateY(-3px) scale(1.02); }
+  .stat-icon { font-size: 22px; margin-bottom: 4px; }
+  .stat-val { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 18px; }
+  .stat-name { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Motivation Banner */
+  .motivate-banner {
+    background: var(--gradient-brand); background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+    border-radius: var(--radius); padding: 18px 20px; color: white; margin-bottom: 16px;
+    position: relative; overflow: hidden;
+  }
+  .motivate-banner::after {
+    content: '💪'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    font-size: 48px; opacity: 0.3; animation: floatBlob 6s ease-in-out infinite;
+  }
+  .motivate-banner h3 { font-family: 'Sora'; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .motivate-banner p { font-size: 13px; opacity: 0.85; max-width: 80%; }
+
+  /* Quick checklist on dashboard */
+  .quick-check-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .quick-check-item:last-child { border-bottom: none; }
+  .check-toggle {
+    width: 24px; height: 24px; border-radius: 8px; border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; transition: all 0.2s; background: white; font-size: 14px;
+  }
+  .check-toggle.done { background: var(--indigo); border-color: var(--indigo); color: white; }
+  .check-label { font-size: 14px; font-weight: 500; flex: 1; }
+  .check-label.done { text-decoration: line-through; color: var(--muted); }
+  .check-tag {
+    font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .tag-food { background: #F0FDF4; color: var(--lime-dark); }
+  .tag-fitness { background: var(--indigo-light); color: var(--indigo); }
+  .tag-skin { background: #FFF1F2; color: #E11D48; }
+  .tag-guitar { background: #FFF7ED; color: var(--amber-dark); }
+  .tag-water { background: #EFF6FF; color: #2563EB; }
+
+  /* ── Daily Log ── */
+  .date-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .date-nav button {
+    width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid var(--border);
+    background: white; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+  }
+  .date-nav-label { font-family: 'Sora'; font-weight: 700; font-size: 16px; }
+
+  .section-title { font-family: 'Sora'; font-weight: 700; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+  /* Checklist sections */
+  .checklist { display: flex; flex-direction: column; gap: 2px; }
+
+  /* Metrics input row */
+  .metrics-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .metric-input { background: var(--card); border-radius: 14px; padding: 16px; box-shadow: var(--shadow); }
+  .metric-input label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+  .metric-input input {
+    width: 100%; font-family: 'Sora'; font-weight: 700; font-size: 22px;
+    border: none; outline: none; background: transparent; color: var(--text);
+  }
+  .metric-unit { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+  /* Workout of day */
+  .workout-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--indigo-light); color: var(--indigo);
+    padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  /* ── Progress Page ── */
+  .progress-hero {
+    background: linear-gradient(135deg, #ECFDF5 0%, #EEF2FF 100%);
+    border-radius: var(--radius); padding: 24px; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .progress-days { font-family: 'Sora'; font-weight: 800; font-size: 56px; color: var(--indigo); line-height: 1; }
+  .progress-days-label { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+  .weight-form { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 16px; }
+  .weight-form input {
+    flex: 1; padding: 12px 16px; border: 2px solid var(--border); border-radius: 12px;
+    font-family: 'Sora'; font-size: 18px; font-weight: 700; outline: none;
+  }
+  .weight-form input:focus { border-color: var(--indigo); }
+  .weight-form select {
+    padding: 12px 14px; border: 2px solid var(--border); border-radius: 12px;
+    font-family: 'Inter'; font-size: 14px; outline: none; background: white;
+  }
+  .btn-save {
+    padding: 12px 20px; background: var(--indigo); color: white;
+    border: none; border-radius: 12px; font-family: 'Sora'; font-weight: 700; font-size: 14px;
+    cursor: pointer; white-space: nowrap;
+  }
+  .btn-save:hover { background: var(--indigo-dark); }
+
+  .weight-list { display: flex; flex-direction: column; gap: 8px; }
+  .weight-entry {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg); padding: 12px 16px; border-radius: 12px;
+  }
+  .weight-entry .month { font-weight: 600; font-size: 14px; }
+  .weight-entry .kg { font-family: 'Sora'; font-weight: 700; font-size: 18px; color: var(--indigo); }
+  .weight-entry .change { font-size: 12px; font-weight: 600; }
+  .change.up { color: var(--rose); }
+  .change.down { color: var(--success); }
+
+  /* Habit streaks */
+  .habit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .habit-card { background: var(--bg); border-radius: 12px; padding: 14px; }
+  .habit-card .h-name { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+  .habit-card .h-streak { font-family: 'Sora'; font-weight: 800; font-size: 22px; }
+  .habit-card .h-label { font-size: 10px; color: var(--muted); }
+
+  /* ── Guitar Page ── */
+  .guitar-hero {
+    background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 100%);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+    border: 2px solid #FCD34D;
+  }
+  .guitar-hero h2 { font-family: 'Sora'; font-weight: 800; font-size: 20px; margin-bottom: 4px; }
+  .guitar-hero p { font-size: 13px; color: var(--muted); }
+
+  .chord-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .chord-card {
+    background: var(--card); border-radius: 12px; padding: 12px;
+    text-align: center; box-shadow: var(--shadow); cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .chord-card:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 20px rgba(99,102,241,0.2); }
+  .chord-card.practiced { background: var(--gradient-fresh); }
+  .chord-card.practiced .chord-name, .chord-card.practiced .chord-sub { color: white; }
+  .chord-name { font-family: 'Sora'; font-weight: 800; font-size: 18px; color: var(--indigo); }
+  .chord-sub { font-size: 10px; color: var(--muted); font-weight: 600; }
+  .chord-check { font-size: 18px; margin-top: 4px; }
+
+  .guitar-session-btn {
+    width: 100%; padding: 16px; background: linear-gradient(135deg, var(--amber) 0%, #FDE68A 100%);
+    border: none; border-radius: var(--radius); font-family: 'Sora'; font-weight: 800;
+    font-size: 16px; cursor: pointer; color: var(--text);
+    box-shadow: 0 4px 16px rgba(252,211,77,0.4); margin-bottom: 16px;
+    transition: transform 0.1s;
+  }
+  .guitar-session-btn:active { transform: scale(0.98); }
+
+  .practice-log-entry {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .practice-log-entry:last-child { border-bottom: none; }
+  .pl-date { font-size: 12px; color: var(--muted); min-width: 70px; }
+  .pl-mins { font-family: 'Sora'; font-weight: 700; font-size: 16px; color: var(--amber-dark); min-width: 48px; }
+  .pl-note { font-size: 13px; color: var(--text); flex: 1; }
+
+  /* Snackbar */
+  #snackbar {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+    background: #1E293B; color: white; padding: 10px 20px; border-radius: 20px;
+    font-size: 14px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.3s;
+    pointer-events: none; white-space: nowrap;
+  }
+  #snackbar.show { opacity: 1; }
+  @media (min-width: 768px) { #snackbar { bottom: 24px; } }
+
+  /* Profile Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    z-index: 200; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: white; border-radius: 24px; padding: 28px; width: 100%; max-width: 360px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal h2 { font-family: 'Sora'; font-weight: 800; font-size: 18px; margin-bottom: 20px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .btn-outline {
+    flex: 1; padding: 12px; border: 1.5px solid var(--border); border-radius: 12px;
+    background: none; font-family: 'Inter'; font-weight: 600; font-size: 14px;
+    cursor: pointer; color: var(--text);
+  }
+  .btn-danger {
+    flex: 1; padding: 12px; border: none; border-radius: 12px;
+    background: #FFF1F2; color: #E11D48; font-family: 'Inter'; font-weight: 700; font-size: 14px;
+    cursor: pointer;
+  }
+  .btn-danger:hover { background: #FFE4E6; }
+
+  .page-header { margin-bottom: 20px; }
+  .page-header h1 { font-family: 'Sora'; font-weight: 800; font-size: 22px; }
+  .page-header p { font-size: 14px; color: var(--muted); margin-top: 2px; }
+
+  .save-bar {
+    position: sticky; bottom: 0; background: white; padding: 12px 0;
+    border-top: 1px solid var(--border); margin-top: 16px; z-index: 10;
+  }
+  @media(min-width:768px){ .save-bar { position: static; border: none; } }
+  .save-bar .btn-primary { width: 100%; }
+
+  /* Loading */
+  #loading {
+    position: fixed; inset: 0; background: white; display: flex;
+    align-items: center; justify-content: center; z-index: 999; flex-direction: column; gap: 16px;
+  }
+  #loading .spin {
+    width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--indigo);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-family: 'Sora'; font-weight: 700; font-size: 16px; color: var(--indigo); }
+
+  /* Util */
+  .flex-row { display: flex; gap: 10px; align-items: center; }
+  .ml-auto { margin-left: auto; }
+  .text-sm { font-size: 13px; }
+  .text-muted { color: var(--muted); }
+  .mb-0 { margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spin"></div>
+  <div class="loading-text">Loading your tracker…</div>
+</div>
+
+<script>
+// Fallback: if Firebase never calls onAuthStateChanged (e.g. placeholder config),
+// hide loading after 4s and show the landing page so the app is usable
+window._loadingFallback = setTimeout(() => {
+  const ld = document.getElementById('loading');
+  if (ld && ld.style.display !== 'none') {
+    ld.style.display = 'none';
+    window.showLandingPage();
+  }
+}, 4000);
+
+// Landing <-> Auth navigation (defined early so buttons work immediately)
+window.showLandingPage = () => {
+  const landing = document.getElementById('landing-page');
+  const authScreen = document.getElementById('auth-screen');
+  if (landing) landing.style.display = 'flex';
+  if (authScreen) authScreen.style.display = 'none';
+};
+window.enterAuth = (tab) => {
+  const landing = document.getElementById('landing-page');
+  const authScreen = document.getElementById('auth-screen');
+  if (landing) landing.style.display = 'none';
+  if (authScreen) authScreen.style.display = 'flex';
+  if (window._firebaseWarningPending) {
+    const warn = document.getElementById('firebase-warning');
+    if (warn) warn.style.display = 'block';
+  }
+  if (typeof window.switchTab === 'function') window.switchTab(tab || 'login');
+};
+</script>
+
+<!-- Landing Page -->
+<div id="landing-page" style="display:none">
+  <div class="landing-blob blob-1"></div>
+  <div class="landing-blob blob-2"></div>
+  <div class="landing-blob blob-3"></div>
+
+  <div class="landing-nav">
+    <div class="landing-logo"><div class="ring">⚡</div> Transform</div>
+    <button class="landing-signin-link" onclick="enterAuth('login')">Sign In</button>
+  </div>
+
+  <div class="landing-hero">
+    <div class="landing-badge">🚀 AUG – DEC 2026 · 153 DAY JOURNEY</div>
+    <h1>Build the <span>strongest, sharpest</span><br/>version of you</h1>
+    <p class="sub">One tracker for workouts, nutrition, skincare, sleep &amp; guitar practice — with streaks, stats and daily check-ins that keep you honest.</p>
+    <div class="landing-cta-row">
+      <button class="btn-landing-primary" onclick="enterAuth('signup')">Start Your Journey →</button>
+      <button class="btn-landing-secondary" onclick="enterAuth('login')">I already have an account</button>
+    </div>
+    <div class="landing-features">
+      <div class="landing-feature"><div class="lf-icon">💪</div><div class="lf-label">Fitness</div></div>
+      <div class="landing-feature"><div class="lf-icon">🍽️</div><div class="lf-label">Nutrition</div></div>
+      <div class="landing-feature"><div class="lf-icon">✨</div><div class="lf-label">Skincare</div></div>
+      <div class="landing-feature"><div class="lf-icon">🎸</div><div class="lf-label">Guitar</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Auth -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <button class="auth-back" onclick="showLandingPage()">← Back</button>
+    <div class="auth-logo">
+      <div class="ring"><span>⚡</span></div>
+      <div>
+        <h1>Transform</h1>
+        <p>Aug – Dec 2026 · Your Journey</p>
+      </div>
+    </div>
+    <div id="firebase-warning" style="display:none;background:#FFF7ED;border:1.5px solid #FCD34D;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#92400E;line-height:1.5;">
+      ⚠️ <strong>Firebase not configured yet.</strong><br>
+      Open the HTML file, find <code style="background:#FEF3C7;padding:1px 4px;border-radius:4px">firebaseConfig</code> near line 775, and replace the <code style="background:#FEF3C7;padding:1px 4px;border-radius:4px">YOUR_*</code> values with your Firebase project credentials. Then reload.
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+    <div class="auth-form">
+      <div class="field" id="name-field" style="display:none">
+        <label>Display Name</label>
+        <input type="text" id="auth-name" placeholder="Shreyas" autocomplete="name"/>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="auth-email" placeholder="you@email.com" autocomplete="email"/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="auth-password" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <div class="auth-msg" id="auth-msg"></div>
+      <button class="btn-primary" id="auth-btn" onclick="doAuth()">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <!-- Desktop Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-brand">Transform ⚡</div>
+    <div class="sidebar-sub">Aug – Dec 2026</div>
+    <div class="sidebar-nav">
+      <button class="sidebar-nav-item active" onclick="navigate('dashboard', this)"><span class="sidebar-icon">🏠</span> Dashboard</button>
+      <button class="sidebar-nav-item" onclick="navigate('daily', this)"><span class="sidebar-icon">✅</span> Daily Log</button>
+      <button class="sidebar-nav-item" onclick="navigate('progress', this)"><span class="sidebar-icon">📈</span> Progress</button>
+      <button class="sidebar-nav-item" onclick="navigate('guitar', this)"><span class="sidebar-icon">🎸</span> Guitar</button>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-streak">🔥 <span id="sb-streak">0</span> day streak</div>
+      <div class="sidebar-user">
+        <div class="avatar" id="sb-avatar">S</div>
+        <div>
+          <div class="uname" id="sb-name">Shreyas</div>
+          <div class="uemail" id="sb-email">–</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="showProfileModal()">⚙️ Account & Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- Mobile Topbar -->
+    <div class="topbar">
+      <div>
+        <div class="topbar-brand">Transform ⚡</div>
+        <div class="topbar-date" id="topbar-date"></div>
+      </div>
+      <div class="topbar-right">
+        <div class="streak-badge">🔥 <span id="top-streak">0</span></div>
+        <button class="avatar-btn" id="top-avatar" onclick="showProfileModal()">S</button>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="page-dashboard" class="page active" style="padding:16px">
+      <div class="dash-greeting" id="greeting">Good morning! 👋</div>
+      <div class="dash-sub" id="dash-date-sub">Loading…</div>
+
+      <div class="motivate-banner" id="motivate-banner">
+        <h3>Day 1 of 153</h3>
+        <p>Every rep, every meal, every chord — it all compounds.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">🥾</div>
+          <div class="stat-val" id="d-steps">–</div>
+          <div class="stat-name">Steps</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-val" id="d-cal">–</div>
+          <div class="stat-name">Calories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💧</div>
+          <div class="stat-val" id="d-water">–L</div>
+          <div class="stat-name">Water</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ring-container">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 160 160" width="160" height="160">
+              <circle cx="80" cy="80" r="65" fill="none" stroke="#E2E8F0" stroke-width="14"/>
+              <circle cx="80" cy="80" r="65" fill="none" stroke="url(#rg)" stroke-width="14"
+                stroke-linecap="round" stroke-dasharray="408" stroke-dashoffset="408" id="ring-arc"/>
+              <defs>
+                <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#6366F1"/>
+                  <stop offset="100%" stop-color="#A3E635"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-pct" id="ring-pct">0%</div>
+              <div class="ring-label">Done Today</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Today's Checklist Snapshot</div>
+        <div id="dash-checklist"></div>
+        <button class="btn-primary" style="margin-top:14px; padding:12px;" onclick="navigate('daily', document.querySelector('.nav-item[data-page=daily]'))">Open Full Log →</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏋️ Today's Workout</div>
+        <div id="dash-workout" class="workout-badge">Loading…</div>
+        <div class="text-sm text-muted" id="dash-workout-sub"></div>
+      </div>
+    </div>
+
+    <!-- Daily Log -->
+    <div id="page-daily" class="page" style="padding:16px">
+      <div class="page-header">
+        <h1>Daily Log</h1>
+        <p>Track your habits, food & vitals</p>
+      </div>
+
+      <div class="date-nav">
+        <button onclick="changeDay(-1)">‹</button>
+        <div class="date-nav-label" id="daily-date-label">Today</div>
+        <button onclick="changeDay(1)">›</button>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric-input">
+          <label>Steps 🥾</label>
+          <input type="number" id="inp-steps" placeholder="8000" oninput="autosaveMeta()"/>
+          <div class="metric-unit">steps</div>
+        </div>
+        <div class="metric-input">
+          <label>Calories 🔥</label>
+          <input type="number" id="inp-cal" placeholder="2200" oninput="autosaveMeta()"/>
+          <div class="metric-unit">kcal</div>
+        </div>
+        <div class="metric-input">
+          <label>Water 💧</label>
+          <input type="number" step="0.1" id="inp-water" placeholder="3.0" oninput="autosaveMeta()"/>
+          <div class="metric-unit">litres</div>
+        </div>
+        <div class="metric-input">
+          <label>Sleep 😴</label>
+          <input type="number" step="0.5" id="inp-sleep" placeholder="7.5" oninput="autosaveMeta()"/>
+          <div class="metric-unit">hours</div>
+        </div>
+      </div>
+
+      <div class="card mb-0">
+        <div class="card-title">🍽️ Nutrition Checklist</div>
+        <div class="checklist" id="food-checklist"></div>
+      </div>
+      <div class="card mb-0" style="margin-top:12px">
+        <div class="card-title">💪 Fitness & Wellness</div>
+        <div class="checklist" id="fitness-checklist"></div>
+      </div>
+      <div class="card mb-0" style="margin-top:12px">
+        <div class="card-title">✨ Skincare</div>
+        <div class="checklist" id="skin-checklist"></div>
+      </div>
+      <div class="card mb-0" style="margin-top:12px">
+        <div class="card-title">🎸 Guitar Practice</div>
+        <div class="checklist" id="guitar-checklist-daily"></div>
+      </div>
+      <div style="margin-top:12px; padding:16px 0; text-align:center;">
+        <button class="btn-primary" style="width:100%; padding:14px;" onclick="saveDay()">💾 Save Today's Log</button>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div id="page-progress" class="page" style="padding:16px">
+      <div class="page-header">
+        <h1>Progress 📈</h1>
+        <p>Your 5-month transformation stats</p>
+      </div>
+
+      <div class="progress-hero">
+        <div>
+          <div class="progress-days" id="prog-days">0</div>
+          <div class="progress-days-label">Days Completed</div>
+          <div class="text-sm text-muted" style="margin-top:4px" id="prog-remain">153 days to go</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:40px">⚡</div>
+          <div class="text-sm" style="font-weight:700; color:var(--indigo)" id="prog-pct-label">0% done</div>
+        </div>
+      </div>
+
+      <!-- Weight Log -->
+      <div class="card">
+        <div class="card-title">⚖️ Weight Log</div>
+        <div class="weight-form">
+          <select id="weight-month">
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+          </select>
+          <input type="number" id="weight-val" placeholder="70.5" step="0.1" style="max-width:100px"/>
+          <button class="btn-save" onclick="saveWeight()">Save</button>
+        </div>
+        <div class="weight-list" id="weight-list"></div>
+      </div>
+
+      <!-- Habit Stats -->
+      <div class="card">
+        <div class="card-title">🔥 Habit Performance</div>
+        <div class="habit-grid" id="habit-grid"></div>
+      </div>
+
+      <!-- Weekly Average -->
+      <div class="card">
+        <div class="card-title">📊 This Week's Averages</div>
+        <div id="weekly-avg"></div>
+      </div>
+    </div>
+
+    <!-- Guitar -->
+    <div id="page-guitar" class="page" style="padding:16px">
+      <div class="page-header">
+        <h1>Guitar 🎸</h1>
+        <p>Fretboard Fridays — Daily Practice</p>
+      </div>
+
+      <div class="guitar-hero">
+        <h2>Today's Practice</h2>
+        <p id="guitar-schedule-hint">Mon–Fri: 30 min warm-up, chords, strumming, songs</p>
+      </div>
+
+      <button class="guitar-session-btn" onclick="logGuitarSession()">🎵 Log Practice Session</button>
+
+      <div class="card">
+        <div class="card-title">🎵 Chord Tracker</div>
+        <div class="chord-grid" id="chord-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📝 Practice Log</div>
+        <div id="practice-log-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <div class="bottom-nav">
+    <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard', this)">
+      <span class="nav-icon">🏠</span>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" data-page="daily" onclick="navigate('daily', this)">
+      <span class="nav-icon">✅</span>
+      <span>Daily</span>
+    </button>
+    <button class="nav-item" data-page="progress" onclick="navigate('progress', this)">
+      <span class="nav-icon">📈</span>
+      <span>Progress</span>
+    </button>
+    <button class="nav-item" data-page="guitar" onclick="navigate('guitar', this)">
+      <span class="nav-icon">🎸</span>
+      <span>Guitar</span>
+    </button>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal-overlay" id="profile-modal">
+  <div class="modal">
+    <h2>Account</h2>
+    <div class="field" style="margin-bottom:12px">
+      <label style="display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px;">NAME</label>
+      <div id="modal-name" style="font-family:'Sora';font-weight:700;font-size:18px;"></div>
+    </div>
+    <div class="field" style="margin-bottom:12px">
+      <label style="display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px;">EMAIL</label>
+      <div id="modal-email" style="font-size:14px;color:var(--muted);"></div>
+    </div>
+    <div style="background:var(--indigo-light);border-radius:12px;padding:14px;margin-bottom:4px;">
+      <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px;">TRANSFORMATION GOAL</div>
+      <div style="font-size:13px;font-weight:600;">Build lean physique · Skin health · Guitar · Sleep 7–8h</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">Aug 1 – Dec 31, 2026 (153 days)</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeProfileModal()">Close</button>
+      <button class="btn-danger" onclick="signOut()">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<div id="snackbar"></div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getDatabase, ref, set, get, onValue } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+
+// ── FIREBASE CONFIG ── Replace with your actual Firebase project config ──
+const firebaseConfig = {
+  apiKey: "AIzaSyBmO-C7DipyPXQCBnHdzmFpLq_q6VMQ76E",
+  authDomain: "my-routine-cea82.firebaseapp.com",
+  databaseURL: "https://my-routine-cea82-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "my-routine-cea82",
+  storageBucket: "my-routine-cea82.firebasestorage.app",
+  messagingSenderId: "212356780959",
+  appId: "1:212356780959:web:2112036f736495877de3aa",
+  measurementId: "G-8RQZK0Y9JE"
+};
+// ──────────────────────────────────────────────────────────────────────────
+
+// Check if Firebase config has been filled in
+const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
+window.isFirebaseConfigured = isFirebaseConfigured;
+if (!isFirebaseConfigured) {
+  // Defer the warning banner until the user opens the auth screen
+  clearTimeout(window._loadingFallback);
+  document.getElementById('loading').style.display = 'none';
+  window._firebaseWarningPending = true;
+  window.showLandingPage();
+}
+
+let app, auth, db;
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getDatabase(app);
+} catch(initErr) {
+  console.error('Firebase init failed:', initErr);
+  clearTimeout(window._loadingFallback);
+  document.getElementById('loading').style.display = 'none';
+  window.showLandingPage();
+  document.getElementById('auth-msg').textContent = '⚠️ Firebase config error. Check console.';
+}
+
+// ── State ──
+let currentUser = null;
+let currentDayKey = todayKey();
+let dailyData = {};
+let weightData = {};
+let guitarSessions = [];
+
+// ── Checklist definitions ──
+const FOOD_ITEMS = [
+  { id:'f1', label:'Wake-up water + almonds + walnuts + seeds', tag:'water' },
+  { id:'f2', label:'Breakfast: eggs / paneer + oats/bread + banana + milk', tag:'food' },
+  { id:'f3', label:'Mid-morning snack: fruit + mixed nuts', tag:'food' },
+  { id:'f4', label:'Lunch: rice/chapati + protein + dal + veggies + curd', tag:'food' },
+  { id:'f5', label:'Evening snack: sprouts / roasted chana / buttermilk', tag:'food' },
+  { id:'f6', label:'Dinner: protein + chapati + veggies + curd', tag:'food' },
+  { id:'f7', label:'Before bed: warm milk', tag:'food' },
+  { id:'f8', label:'Drank 3–4 L of water today', tag:'water' },
+  { id:'f9', label:'Protein in every meal ✓', tag:'food' },
+  { id:'f10', label:'Fruits & vegetables included', tag:'food' },
+  { id:'f11', label:'No junk food / smoking', tag:'food' },
+];
+const FITNESS_ITEMS = [
+  { id:'w1', label:'Completed today\'s gym workout', tag:'fitness' },
+  { id:'w2', label:'Slept by 11 PM last night', tag:'fitness' },
+  { id:'w3', label:'Steps goal (8000+)', tag:'fitness' },
+];
+const SKIN_ITEMS = [
+  { id:'s1', label:'Morning cleanser', tag:'skin' },
+  { id:'s2', label:'Vitamin C serum (optional)', tag:'skin' },
+  { id:'s3', label:'Morning moisturizer', tag:'skin' },
+  { id:'s4', label:'SPF 50 sunscreen applied', tag:'skin' },
+  { id:'s5', label:'Night cleanser', tag:'skin' },
+  { id:'s6', label:'Night moisturizer', tag:'skin' },
+];
+const GUITAR_DAILY_ITEMS = [
+  { id:'g1', label:'Guitar practice session done', tag:'guitar' },
+  { id:'g2', label:'Warm-up exercises', tag:'guitar' },
+  { id:'g3', label:'Chord practice', tag:'guitar' },
+  { id:'g4', label:'Strumming patterns', tag:'guitar' },
+  { id:'g5', label:'Song practice', tag:'guitar' },
+];
+const ALL_ITEMS = [...FOOD_ITEMS, ...FITNESS_ITEMS, ...SKIN_ITEMS, ...GUITAR_DAILY_ITEMS];
+
+const CHORDS = ['C','D','E','G','A','Am','Em','F','Dm','Bm'];
+
+const WORKOUT_SPLIT = {
+  0: { name: 'Recovery Walk & Stretching 🧘', tip: 'Light walk + full body stretch. Recovery is growth.' },
+  1: { name: 'Chest & Triceps 💪', tip: 'Bench press, push-ups, tricep dips, skull crushers.' },
+  2: { name: 'Back & Biceps 🏋️', tip: 'Pull-ups, rows, lat pulldown, bicep curls.' },
+  3: { name: 'Legs 🦵', tip: 'Squats, lunges, leg press, calf raises.' },
+  4: { name: 'Shoulders & Abs 🎯', tip: 'Overhead press, lateral raises, planks, crunches.' },
+  5: { name: 'Arms & Cardio 🏃', tip: 'Superset arms + 20 min cardio session.' },
+  6: { name: 'Full Body & Mobility 🔄', tip: 'Compound lifts + mobility drills + stretching.' },
+};
+
+const QUOTES = [
+  "Discipline is choosing between what you want now and what you want most.",
+  "Every rep, every meal, every chord — it all compounds.",
+  "The body achieves what the mind believes.",
+  "Show up even when you don't feel like it. That's where the magic happens.",
+  "Progress is not linear. Stay consistent anyway.",
+  "You're not just building a body. You're building a version of yourself.",
+  "153 days of discipline changes everything.",
+  "Rest is part of the process. So is pushing harder tomorrow.",
+  "Small actions, done daily, become unstoppable momentum.",
+];
+
+// ── Helpers ──
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function keyToDate(k) {
+  const [y,m,d] = k.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function formatDate(k) {
+  const d = keyToDate(k);
+  return d.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long' });
+}
+function isToday(k) { return k === todayKey(); }
+function daysBetween(d1, d2) { return Math.round((d2-d1)/(1000*60*60*24)); }
+function showSnack(msg) {
+  const sb = document.getElementById('snackbar');
+  sb.textContent = msg; sb.classList.add('show');
+  setTimeout(() => sb.classList.remove('show'), 2800);
+}
+
+// ── Auth Tab ──
+window.switchTab = (tab) => {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'? i===0 : i===1)));
+  document.getElementById('name-field').style.display = tab === 'signup' ? '' : 'none';
+  document.getElementById('auth-btn').textContent = tab === 'signup' ? 'Create Account' : 'Sign In';
+  document.getElementById('auth-msg').textContent = '';
+};
+
+window.doAuth = async () => {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const name = document.getElementById('auth-name').value.trim();
+  const isSignup = document.getElementById('auth-btn').textContent.includes('Create');
+  const msgEl = document.getElementById('auth-msg');
+  if (!auth) { msgEl.textContent = '⚠️ Firebase not configured. Add your Firebase credentials first.'; return; }
+  if (!email || !password) { msgEl.textContent = 'Please fill in email and password.'; return; }
+  try {
+    if (isSignup) {
+      if (!name) { msgEl.textContent = 'Please enter your name.'; return; }
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: name });
+    } else {
+      await signInWithEmailAndPassword(auth, email, password);
+    }
+    msgEl.textContent = '';
+  } catch(e) {
+    msgEl.textContent = e.message.replace('Firebase: ','').replace(/\(auth\/.*\)/,'');
+  }
+};
+
+window.signOut = async () => {
+  await fbSignOut(auth);
+  closeProfileModal();
+};
+
+// ── Auth State ──
+if (auth) onAuthStateChanged(auth, async (user) => {
+  clearTimeout(window._loadingFallback);
+  document.getElementById('loading').style.display = 'none';
+  if (user) {
+    currentUser = user;
+    document.getElementById('landing-page').style.display = 'none';
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+    const displayName = user.displayName || user.email.split('@')[0];
+    const initial = displayName[0].toUpperCase();
+    document.getElementById('top-avatar').textContent = initial;
+    document.getElementById('sb-avatar').textContent = initial;
+    document.getElementById('sb-name').textContent = displayName;
+    document.getElementById('sb-email').textContent = user.email;
+    document.getElementById('modal-name').textContent = displayName;
+    document.getElementById('modal-email').textContent = user.email;
+    await loadAllData();
+    initUI();
+  } else {
+    currentUser = null;
+    document.getElementById('app').classList.remove('visible');
+    window.showLandingPage();
+  }
+});
+
+// ── Firebase Data ──
+async function loadAllData() {
+  const uid = currentUser.uid;
+  const snap = await get(ref(db, `users/${uid}`));
+  if (snap.exists()) {
+    const d = snap.val();
+    dailyData = d.daily || {};
+    weightData = d.weight || {};
+    guitarSessions = d.guitar || [];
+  }
+}
+
+async function saveDayToFirebase(key) {
+  await set(ref(db, `users/${currentUser.uid}/daily/${key}`), dailyData[key] || {});
+}
+async function saveWeightToFirebase() {
+  await set(ref(db, `users/${currentUser.uid}/weight`), weightData);
+}
+async function saveGuitarToFirebase() {
+  await set(ref(db, `users/${currentUser.uid}/guitar`), guitarSessions);
+}
+
+// ── Navigation ──
+window.navigate = (page, btn) => {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`page-${page}`).classList.add('active');
+  document.querySelectorAll('.nav-item, .sidebar-nav-item').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  // Also sync sidebar/mobile
+  document.querySelectorAll(`[data-page="${page}"]`).forEach(b => b.classList.add('active'));
+  if (page === 'daily') renderDailyPage();
+  if (page === 'progress') renderProgressPage();
+  if (page === 'guitar') renderGuitarPage();
+  if (page === 'dashboard') renderDashboard();
+};
+
+// ── Init UI ──
+function initUI() {
+  currentDayKey = todayKey();
+  renderDashboard();
+  renderDailyPage();
+  renderProgressPage();
+  renderGuitarPage();
+  updateStreakDisplay();
+}
+
+// ── Dashboard ──
+function renderDashboard() {
+  const now = new Date();
+  const hour = now.getHours();
+  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const name = currentUser.displayName || 'Champ';
+  document.getElementById('greeting').textContent = `${greet}, ${name}! 👋`;
+  document.getElementById('topbar-date').textContent = formatDate(todayKey());
+  document.getElementById('dash-date-sub').textContent = formatDate(todayKey());
+
+  const start = new Date('2026-08-01');
+  const end = new Date('2026-12-31');
+  const today = new Date();
+  let dayNum = Math.max(0, daysBetween(start, today)) + 1;
+  const totalDays = daysBetween(start, end) + 1;
+  dayNum = Math.min(dayNum, totalDays);
+  const banner = document.getElementById('motivate-banner');
+  const q = QUOTES[dayNum % QUOTES.length];
+  banner.innerHTML = `<h3>Day ${dayNum} of ${totalDays} 🏁</h3><p>${q}</p>`;
+
+  // Stats from today
+  const td = dailyData[todayKey()] || {};
+  document.getElementById('d-steps').textContent = td.steps ? Number(td.steps).toLocaleString() : '–';
+  document.getElementById('d-cal').textContent = td.calories ? Number(td.calories).toLocaleString() : '–';
+  document.getElementById('d-water').textContent = td.water ? `${td.water}L` : '–L';
+
+  // Progress ring
+  const checks = td.checks || {};
+  const done = ALL_ITEMS.filter(i => checks[i.id]).length;
+  const pct = Math.round((done / ALL_ITEMS.length) * 100);
+  document.getElementById('ring-pct').textContent = `${pct}%`;
+  const arc = document.getElementById('ring-arc');
+  const circumference = 408;
+  arc.style.strokeDashoffset = circumference - (circumference * pct / 100);
+
+  // Quick checklist (first 6)
+  const container = document.getElementById('dash-checklist');
+  container.innerHTML = '';
+  [...FOOD_ITEMS.slice(0,4), ...FITNESS_ITEMS.slice(0,2)].forEach(item => {
+    const isDone = checks[item.id];
+    const div = document.createElement('div');
+    div.className = 'quick-check-item';
+    div.innerHTML = `
+      <div class="check-toggle ${isDone ? 'done' : ''}" onclick="toggleDashCheck('${item.id}', this)">
+        ${isDone ? '✓' : ''}
+      </div>
+      <span class="check-label ${isDone ? 'done' : ''}">${item.label}</span>
+      <span class="check-tag tag-${item.tag}">${item.tag}</span>
+    `;
+    container.appendChild(div);
+  });
+
+  // Workout
+  const dow = now.getDay();
+  const wk = WORKOUT_SPLIT[dow];
+  document.getElementById('dash-workout').textContent = `💪 ${wk.name}`;
+  document.getElementById('dash-workout-sub').textContent = wk.tip;
+}
+
+window.toggleDashCheck = (id, el) => {
+  const key = todayKey();
+  if (!dailyData[key]) dailyData[key] = {};
+  if (!dailyData[key].checks) dailyData[key].checks = {};
+  dailyData[key].checks[id] = !dailyData[key].checks[id];
+  el.classList.toggle('done', dailyData[key].checks[id]);
+  el.textContent = dailyData[key].checks[id] ? '✓' : '';
+  el.nextElementSibling.classList.toggle('done', dailyData[key].checks[id]);
+  saveDayToFirebase(key);
+  renderDashboard();
+  showSnack(dailyData[key].checks[id] ? '✅ Marked done!' : 'Unmarked');
+};
+
+// ── Daily Page ──
+function renderDailyPage() {
+  document.getElementById('daily-date-label').textContent =
+    isToday(currentDayKey) ? 'Today · ' + formatDate(currentDayKey) : formatDate(currentDayKey);
+  const td = dailyData[currentDayKey] || {};
+  document.getElementById('inp-steps').value = td.steps || '';
+  document.getElementById('inp-cal').value = td.calories || '';
+  document.getElementById('inp-water').value = td.water || '';
+  document.getElementById('inp-sleep').value = td.sleep || '';
+  renderChecklist('food-checklist', FOOD_ITEMS, td.checks || {});
+  renderChecklist('fitness-checklist', FITNESS_ITEMS, td.checks || {});
+  renderChecklist('skin-checklist', SKIN_ITEMS, td.checks || {});
+  renderChecklist('guitar-checklist-daily', GUITAR_DAILY_ITEMS, td.checks || {});
+}
+
+function renderChecklist(containerId, items, checks) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  items.forEach(item => {
+    const isDone = checks[item.id];
+    const div = document.createElement('div');
+    div.className = 'quick-check-item';
+    div.innerHTML = `
+      <div class="check-toggle ${isDone ? 'done' : ''}" onclick="toggleCheck('${item.id}', this)">
+        ${isDone ? '✓' : ''}
+      </div>
+      <span class="check-label ${isDone ? 'done' : ''}">${item.label}</span>
+      <span class="check-tag tag-${item.tag}">${item.tag}</span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+window.toggleCheck = (id, el) => {
+  if (!dailyData[currentDayKey]) dailyData[currentDayKey] = {};
+  if (!dailyData[currentDayKey].checks) dailyData[currentDayKey].checks = {};
+  const cur = !dailyData[currentDayKey].checks[id];
+  dailyData[currentDayKey].checks[id] = cur;
+  el.classList.toggle('done', cur);
+  el.textContent = cur ? '✓' : '';
+  el.nextElementSibling.classList.toggle('done', cur);
+  renderDashboard();
+};
+
+window.autosaveMeta = () => {
+  if (!dailyData[currentDayKey]) dailyData[currentDayKey] = {};
+  dailyData[currentDayKey].steps = document.getElementById('inp-steps').value;
+  dailyData[currentDayKey].calories = document.getElementById('inp-cal').value;
+  dailyData[currentDayKey].water = document.getElementById('inp-water').value;
+  dailyData[currentDayKey].sleep = document.getElementById('inp-sleep').value;
+  renderDashboard();
+};
+
+window.saveDay = async () => {
+  autosaveMeta();
+  await saveDayToFirebase(currentDayKey);
+  updateStreakDisplay();
+  renderProgressPage();
+  showSnack('✅ Day saved!');
+};
+
+window.changeDay = (dir) => {
+  const d = keyToDate(currentDayKey);
+  d.setDate(d.getDate() + dir);
+  // Limit to Aug 1 – Dec 31 2026
+  const min = new Date('2026-08-01'), max = new Date('2026-12-31');
+  if (d < min || d > max) return;
+  currentDayKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  renderDailyPage();
+};
+
+// ── Progress ──
+function renderProgressPage() {
+  const start = new Date('2026-08-01');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const totalDays = 153;
+  const elapsed = Math.max(0, Math.min(daysBetween(start, today), totalDays));
+  document.getElementById('prog-days').textContent = elapsed;
+  document.getElementById('prog-remain').textContent = `${totalDays - elapsed} days to go`;
+  document.getElementById('prog-pct-label').textContent = `${Math.round(elapsed/totalDays*100)}% complete`;
+
+  // Weight list
+  const wl = document.getElementById('weight-list');
+  wl.innerHTML = '';
+  const months = ['August','September','October','November','December'];
+  let prev = null;
+  months.forEach(m => {
+    if (weightData[m]) {
+      const val = parseFloat(weightData[m]);
+      const div = document.createElement('div');
+      div.className = 'weight-entry';
+      let changeHtml = '';
+      if (prev !== null) {
+        const diff = (val - prev).toFixed(1);
+        const cls = diff > 0 ? 'up' : 'down';
+        const arrow = diff > 0 ? '↑' : '↓';
+        changeHtml = `<span class="change ${cls}">${arrow} ${Math.abs(diff)} kg</span>`;
+      }
+      div.innerHTML = `<div class="month">${m}</div><div class="kg">${val} kg</div>${changeHtml}`;
+      wl.appendChild(div);
+      prev = val;
+    }
+  });
+  if (!wl.children.length) wl.innerHTML = '<div class="text-sm text-muted" style="padding:8px 0">No weight entries yet. Log your starting weight!</div>';
+
+  // Habit grid
+  const hg = document.getElementById('habit-grid');
+  hg.innerHTML = '';
+  const habitDefs = [
+    { name: 'Workout', ids: ['w1'] },
+    { name: 'Guitar', ids: ['g1'] },
+    { name: 'Skincare', ids: ['s4'] },
+    { name: 'Sleep 11PM', ids: ['w2'] },
+    { name: 'Nutrition', ids: ['f2','f4','f6'] },
+    { name: 'Hydration', ids: ['f8'] },
+  ];
+  habitDefs.forEach(h => {
+    const keys = Object.keys(dailyData);
+    const total = keys.filter(k => {
+      const checks = (dailyData[k] && dailyData[k].checks) || {};
+      return h.ids.every(id => checks[id]);
+    }).length;
+    const div = document.createElement('div');
+    div.className = 'habit-card';
+    div.innerHTML = `<div class="h-name">${h.name}</div><div class="h-streak">${total}</div><div class="h-label">days logged</div>`;
+    hg.appendChild(div);
+  });
+
+  // Weekly avg
+  const wa = document.getElementById('weekly-avg');
+  const last7 = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if (dailyData[k]) last7.push(dailyData[k]);
+  }
+  if (!last7.length) { wa.innerHTML = '<div class="text-sm text-muted">No data this week yet.</div>'; return; }
+  const avgSteps = Math.round(last7.filter(d=>d.steps).reduce((a,d)=>a+Number(d.steps),0)/Math.max(1,last7.filter(d=>d.steps).length));
+  const avgCal = Math.round(last7.filter(d=>d.calories).reduce((a,d)=>a+Number(d.calories),0)/Math.max(1,last7.filter(d=>d.calories).length));
+  const avgWater = (last7.filter(d=>d.water).reduce((a,d)=>a+Number(d.water),0)/Math.max(1,last7.filter(d=>d.water).length)).toFixed(1);
+  wa.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div style="text-align:center"><div style="font-family:'Sora';font-weight:800;font-size:20px;color:var(--indigo)">${avgSteps.toLocaleString()}</div><div style="font-size:11px;color:var(--muted);font-weight:600">AVG STEPS</div></div>
+      <div style="text-align:center"><div style="font-family:'Sora';font-weight:800;font-size:20px;color:var(--lime-dark)">${avgCal.toLocaleString()}</div><div style="font-size:11px;color:var(--muted);font-weight:600">AVG KCAL</div></div>
+      <div style="text-align:center"><div style="font-family:'Sora';font-weight:800;font-size:20px;color:var(--teal)">${avgWater}L</div><div style="font-size:11px;color:var(--muted);font-weight:600">AVG WATER</div></div>
+    </div>
+  `;
+}
+
+window.saveWeight = async () => {
+  const month = document.getElementById('weight-month').value;
+  const val = document.getElementById('weight-val').value;
+  if (!val) { showSnack('Enter a weight value!'); return; }
+  weightData[month] = parseFloat(val);
+  await saveWeightToFirebase();
+  document.getElementById('weight-val').value = '';
+  renderProgressPage();
+  showSnack(`✅ ${month} weight saved!`);
+};
+
+// ── Guitar ──
+function renderGuitarPage() {
+  const dow = new Date().getDay();
+  const isWeekend = dow === 0 || dow === 6;
+  document.getElementById('guitar-schedule-hint').textContent = isWeekend
+    ? 'Weekend: 60–90 min. Learn new songs, review progress.'
+    : 'Weekday: 30 min — warm-up, chords, strumming, songs.';
+
+  // Chord grid
+  const cg = document.getElementById('chord-grid');
+  cg.innerHTML = '';
+  const practicedToday = guitarSessions.filter(s => s.date === todayKey())[0];
+  const practicedChords = practicedToday ? (practicedToday.chords || []) : [];
+  CHORDS.forEach(chord => {
+    const p = practicedChords.includes(chord);
+    const div = document.createElement('div');
+    div.className = `chord-card ${p ? 'practiced' : ''}`;
+    div.innerHTML = `<div class="chord-name">${chord}</div><div class="chord-sub">Chord</div><div class="chord-check">${p ? '✅' : '○'}</div>`;
+    div.onclick = () => toggleChord(chord);
+    cg.appendChild(div);
+  });
+
+  // Practice log
+  const pl = document.getElementById('practice-log-list');
+  const sorted = [...guitarSessions].sort((a,b) => b.date.localeCompare(a.date)).slice(0, 10);
+  if (!sorted.length) { pl.innerHTML = '<div class="text-sm text-muted" style="padding:8px 0">No sessions logged yet. Start practicing!</div>'; return; }
+  pl.innerHTML = '';
+  sorted.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'practice-log-entry';
+    div.innerHTML = `<div class="pl-date">${s.date}</div><div class="pl-mins">${s.mins} min</div><div class="pl-note">${s.note || 'Practice session'}</div>`;
+    pl.appendChild(div);
+  });
+}
+
+window.toggleChord = (chord) => {
+  const todaySession = guitarSessions.find(s => s.date === todayKey());
+  if (!todaySession) { showSnack('Log a session first!'); return; }
+  if (!todaySession.chords) todaySession.chords = [];
+  const idx = todaySession.chords.indexOf(chord);
+  if (idx >= 0) todaySession.chords.splice(idx, 1);
+  else todaySession.chords.push(chord);
+  saveGuitarToFirebase();
+  renderGuitarPage();
+};
+
+window.logGuitarSession = () => {
+  const mins = prompt('How many minutes did you practice?', '30');
+  if (!mins) return;
+  const note = prompt('Any notes? (optional)', '') || '';
+  const existing = guitarSessions.findIndex(s => s.date === todayKey());
+  if (existing >= 0) {
+    guitarSessions[existing].mins = parseInt(mins);
+    guitarSessions[existing].note = note;
+  } else {
+    guitarSessions.push({ date: todayKey(), mins: parseInt(mins), note, chords: [] });
+  }
+  saveGuitarToFirebase();
+  renderGuitarPage();
+  // Also mark guitar daily item
+  if (!dailyData[todayKey()]) dailyData[todayKey()] = {};
+  if (!dailyData[todayKey()].checks) dailyData[todayKey()].checks = {};
+  dailyData[todayKey()].checks['g1'] = true;
+  saveDayToFirebase(todayKey());
+  renderDashboard();
+  showSnack(`🎸 ${mins} min session logged!`);
+};
+
+// ── Streak ──
+function updateStreakDisplay() {
+  let streak = 0;
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = 0; i < 200; i++) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const td = dailyData[k];
+    if (!td) break;
+    const checks = td.checks || {};
+    const done = ALL_ITEMS.filter(it => checks[it.id]).length;
+    if (done >= Math.floor(ALL_ITEMS.length * 0.5)) streak++;
+    else break;
+  }
+  document.getElementById('top-streak').textContent = `${streak} 🔥`;
+  document.getElementById('sb-streak').textContent = streak;
+}
+
+// ── Profile Modal ──
+window.showProfileModal = () => document.getElementById('profile-modal').classList.add('show');
+window.closeProfileModal = () => document.getElementById('profile-modal').classList.remove('show');
+window.onclick = (e) => { if (e.target === document.getElementById('profile-modal')) closeProfileModal(); };
+</script>
+</body>
+</html>
